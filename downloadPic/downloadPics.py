@@ -1,14 +1,15 @@
+from urllib import request
 from urllib.request import urlopen
 from bs4 import BeautifulSoup
 import re
-from urllib import request
+import config
 
 def downloadPic(filePath,fileName="de.jpg"):
     try:
         web = request.urlopen(filePath)
         print("要下载的图片:"+fileName)
         pic = web.read()
-        picDir = "F:\\pics\\"
+        picDir = config.localDir
         print("保存文件"+picDir+fileName+"\n")
         try:
             file = open(picDir+fileName,"wb")
@@ -22,12 +23,11 @@ def downloadPic(filePath,fileName="de.jpg"):
         print("error\n")
         return
 
-html = urlopen("http://docs.heweather.com/224292")
+html = urlopen(config.webUrl)
 bsObj = BeautifulSoup(html)
 
-pics = bsObj.findAll("a",{"href":re.compile("http\:\/\/files\.heweather\.com\/.*\.png")})
+pics = bsObj.findAll("a",{"href":re.compile(config.picUrlRe)})
 for pic in pics:
     #print(pic["href"])
     #print(pic.get_text())
     downloadPic(pic["href"],pic.get_text())
-
